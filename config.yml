@@ -1,2 +1,7 @@
-SignShort: re
-SignLong: RealEstate
+GPRealEstate:
+  Keyword:
+  	Short: '[RE]'
+  	Long: '[RealEstate]'
+  Rules:
+  	IgnoreClaimLimit: false
+  

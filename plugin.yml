@@ -1,19 +1,28 @@
 name: GPRealEstate
 main: me.SuperPyroManiac.GPR.GPRealEstate
-version: 1.4.2
-author: SuperPyroManiac
 depend: [GriefPrevention, Vault]
-
+dev-url: http://www.spigotmc.org/resources/griefprevention-addon-realestate.1974/
+version: 1.4.4
+authors: [SuperPyroManiac, MrCaira]
+commands:
+  gpre:
+    description: Access to the GPRealEstate command.
+    usage: /<command> ?
+    aliases: [realestate, gprealestate]
+    permission: gprealestate.info
+    permission-message: You do not have access to that command!
 permissions:
   gprealestate.*:
     description: Gives access to all GPRealEstate permissions.
     default: op
     children:
-      GPRealEstate.sell: true
-      GPRealEstate.buy: true
+      gprealestate.sell: true
+      gprealestate.buy: true
       gprealestate.adminclaim: true
       gprealestate.sellsub: true
       gprealestate.buysub: true
+      gprealestate.info: true
+      gprealestate.ignoresizelimit: true
   gprealestate.sell:
     description: Allows player to sell claims.
     default: true
@@ -29,3 +38,9 @@ permissions:
   gprealestate.buysub:
     description: Allows player to buy subclaims.
     default: true
+  gprealestate.info:
+    description: Allows the player to see information about the plugin
+    default: false
+  gprealestate.ignoresizelimit:
+    description: Allows player to buy claims thats bigger than the players available claim size.
+    default: false
