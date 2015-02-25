@@ -139,10 +139,10 @@ public class GPREListener implements Listener {
                         event.setLine(2, player.getName());
                         event.setLine(3, price + " " + GPRealEstate.econ.currencyNamePlural());
                         
-                        player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.AQUA + "You are now leasing this subclaim for " + ChatColor.GREEN + price + " " + GPRealEstate.econ.currencyNamePlural());
+                        player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.AQUA + "You are now selling access to this subclaim for " + ChatColor.GREEN + price + " " + GPRealEstate.econ.currencyNamePlural());
 
                         plugin.addLogEntry(
-                    		"[" + this.dateFormat.format(this.date) + "] " + player.getName() + " has made a subclaim for lease at "
+                    		"[" + this.dateFormat.format(this.date) + "] " + player.getName() + " has made a subclaim access for sale at "
                     		+ "[" + player.getLocation().getWorld() + ", "
                     		+ "X: " + player.getLocation().getBlockX() + ", "
                     		+ "Y: " + player.getLocation().getBlockY() + ", "
@@ -155,6 +155,29 @@ public class GPREListener implements Listener {
                 		
                 		// Leasing with due time, player pays once every "X" for a subclaim.
                 		
+                		if(!period.matches("^([0-9]{1,3})(w|d|h){1}$")){
+                			player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "The leasing period you wrote is not correct.");
+                			event.getBlock().breakNaturally();
+                            event.setCancelled(true);
+                            return;
+                		}
+                		
+                		event.setLine(0, plugin.dataStore.cfgSignLong);
+                        event.setLine(1, ChatColor.DARK_GREEN + plugin.dataStore.cfgReplaceRent);
+                        event.setLine(2, player.getName());
+                        event.setLine(3, price + " " + GPRealEstate.econ.currencyNamePlural());
+                		
+                        player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.AQUA + "You are now leasing this subclaim for " + ChatColor.GREEN + price + " " + GPRealEstate.econ.currencyNamePlural());
+
+                        plugin.addLogEntry(
+                    		"[" + this.dateFormat.format(this.date) + "] " + player.getName() + " has made a subclaim for lease at "
+                    		+ "[" + player.getLocation().getWorld() + ", "
+                    		+ "X: " + player.getLocation().getBlockX() + ", "
+                    		+ "Y: " + player.getLocation().getBlockY() + ", "
+                    		+ "Z: " + player.getLocation().getBlockZ() + "] "
+                    		+ "Price: " + price + " " + GPRealEstate.econ.currencyNamePlural()
+                        );
+                        
                 	}
                 	
                 }
@@ -206,7 +229,6 @@ public class GPREListener implements Listener {
                 	}
                 	else {
                 		// Player is not sneaking, and should wants to buy the claim
-                		event.getPlayer().sendMessage(plugin.dataStore.chatPrefix + ChatColor.GREEN + "You clearly want to buy/lease this claim!");
                 		
                 		if (claim == null) {
                 			// Sign is NOT inside a claim, breaks the sign.
@@ -231,6 +253,7 @@ public class GPREListener implements Listener {
                 			
                 			if(status.equalsIgnoreCase(plugin.dataStore.cfgReplaceSell)){
                 				// The player will be BUYING the selected claim.
+                				event.getPlayer().sendMessage(plugin.dataStore.chatPrefix + ChatColor.GREEN + "You want to buy this claim!");
                 			}
                 			
                 		}
@@ -247,6 +270,8 @@ public class GPREListener implements Listener {
                                     return;
                                 }
                 				
+                				event.getPlayer().sendMessage(plugin.dataStore.chatPrefix + ChatColor.GREEN + "You want to buy access to this sub claim!");
+                				
                 			}
                 			else if(status.equalsIgnoreCase(plugin.dataStore.cfgReplaceSell)){
                 				
@@ -257,6 +282,18 @@ public class GPREListener implements Listener {
                                     event.getClickedBlock().setType(Material.AIR);
                                     return;
                                 }
+                				
+                				//if(period.matches("^([0-9]{1,3})(w{1})$")){
+                				//	lengthInSeconds = ((7*24*60*60)*length); 	// The time has been set using weeks.
+                				//}
+                				//else if(period.matches("^([0-9]{1,3})(d{1})$")){
+                				//	lengthInSeconds = ((24*60*60)*length); 		// The time has been set using days.
+                				//}
+                				//else if(period.matches("^([0-9]{1,3})(h{1})$")){
+                				//	lengthInSeconds = ((60*60)*length); 		// The time has been set using hours.
+                				//}
+                				
+                				event.getPlayer().sendMessage(plugin.dataStore.chatPrefix + ChatColor.GREEN + "You want to lease this claim!");
                 				
                 			}
                 			else {
