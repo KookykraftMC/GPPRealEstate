@@ -1,9 +1,9 @@
 name: GPRealEstate
 main: me.SuperPyroManiac.GPR.GPRealEstate
-depend: [GriefPrevention, Vault]
 dev-url: http://www.spigotmc.org/resources/griefprevention-addon-realestate.1974/
-version: 1.4.4
+version: 1.4.5
 authors: [SuperPyroManiac, MrCaira]
+depend: [GriefPrevention, Vault]
 commands:
   gpre:
     description: Access to the GPRealEstate command.
@@ -16,29 +16,37 @@ permissions:
     description: Gives access to all GPRealEstate permissions.
     default: op
     children:
-      gprealestate.sell: true
-      gprealestate.buy: true
-      gprealestate.adminclaim: true
-      gprealestate.sellsub: true
-      gprealestate.buysub: true
+      gprealestate.sell.claim: true
+      gprealestate.sell.subclaim: true
+      gprealestate.buy.claim: true
+      gprealestate.buy.subclaim: true
       gprealestate.info: true
       gprealestate.ignoresizelimit: true
-  gprealestate.sell:
+  gprealestate.sell.*:
+    description: Gives access to sell all claim types.
+    default: op
+    children:
+      gprealestate.sell.claim: true
+      gprealestate.sell.subclaim: true
+  gprealestate.buy.*:
+    description: Gives access to buy all claim types.
+    default: op
+    children:
+      gprealestate.sell.claim: true
+      gprealestate.sell.subclaim: true
+  gprealestate.sell.claim:
     description: Allows player to sell claims.
     default: true
-  gprealestate.buy:
-    description: Allows player to buy claims.
-    default: true
-  gprealestate.adminclaim:
-    description: Allows players to sell admin claims.
-    default: false
-  gprealestate.sellsub:
+  gprealestate.sell.subclaim:
     description: Allows player to sell subclaims.
     default: true
-  gprealestate.buysub:
+  gprealestate.buy.claim:
+    description: Allows player to buy claims.
+    default: true
+  gprealestate.buy.subclaim:
     description: Allows player to buy subclaims.
     default: true
-  gprealestate.info:
+  gprealestate.admin:
     description: Allows the player to see information about the plugin
     default: false
   gprealestate.ignoresizelimit:

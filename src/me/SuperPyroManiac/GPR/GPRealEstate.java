@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
 import net.milkbowl.vault.economy.Economy;
@@ -22,8 +25,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class GPRealEstate extends JavaPlugin {
 	
     Logger log;
-    
-    PluginDescriptionFile pdf;
+    DataStore dataStore;
     
     // Dependencies Variables
     public static boolean vaultPresent = false;
@@ -33,7 +35,7 @@ public class GPRealEstate extends JavaPlugin {
     public void onEnable(){
         
         this.log = getLogger();
-        this.pdf = this.getDescription();
+        this.dataStore = new DataStore(this);
         
         new GPREListener(this).registerEvents();
 
@@ -70,22 +72,22 @@ public class GPRealEstate extends JavaPlugin {
     	if(command.getName().equalsIgnoreCase("gpre")){
     		
     		if(args.length == 0){
-    			sender.sendMessage(DataStore.chatPrefix + ChatColor.RED + "Unknown command function.");
+    			sender.sendMessage(dataStore.chatPrefix + ChatColor.RED + "Unknown command function.");
     			return true;
     		}
     		else if(args.length == 1){
     			
     			if(args[0].equalsIgnoreCase("version")){
-    				sender.sendMessage(DataStore.chatPrefix + ChatColor.GREEN + "You are running " + ChatColor.RED + pdf.getName() + ChatColor.GREEN + " version " + ChatColor.RED + pdf.getVersion());
+    				sender.sendMessage(dataStore.chatPrefix + ChatColor.GREEN + "You are running " + ChatColor.RED + dataStore.pdf.getName() + ChatColor.GREEN + " version " + ChatColor.RED + dataStore.pdf.getVersion());
     				return true;
     			}
     			else if(args[0].equalsIgnoreCase("reload")){
     				loadConfig(true); 
-    				sender.sendMessage(DataStore.chatPrefix + ChatColor.GREEN + "The config file was succesfully reloaded.");
+    				sender.sendMessage(dataStore.chatPrefix + ChatColor.GREEN + "The config file was succesfully reloaded.");
     				return true;
     			}
     			else {
-    				sender.sendMessage(DataStore.chatPrefix + ChatColor.GREEN + "I don't know what to do with that.");
+    				sender.sendMessage(dataStore.chatPrefix + ChatColor.GREEN + "I don't know what to do with that.");
         			return true;
     			}
     			
@@ -99,36 +101,47 @@ public class GPRealEstate extends JavaPlugin {
     
     private void loadConfig(boolean reload){
     	
-    	FileConfiguration config = YamlConfiguration.loadConfiguration(new File(DataStore.configFilePath));
+    	FileConfiguration config = YamlConfiguration.loadConfiguration(new File(dataStore.configFilePath));
         FileConfiguration outConfig = new YamlConfiguration();
         
-    	// Loading the config file items that exsists.
-        DataStore.cfgShortSignName = config.getString("GPRealEstate.Keywords.Short", "[RE]");
-        DataStore.cfgLongSignName = config.getString("GPRealEstate.Keywords.Long", "[RealEstate]");
-        DataStore.cfgIgnoreClaimSize = config.getBoolean("GPRealEstate.Rules.IgnoreSizeLimit", false);
+    	// Loading the config file items that exsists or setting the default values.
+        dataStore.cfgSignShort = config.getString("GPRealEstate.Keywords.Signs.Short", "[RE]");
+        dataStore.cfgSignLong = config.getString("GPRealEstate.Keywords.Signs.Long", "[RealEstate]");
+        
+        dataStore.cfgRentKeywords = dataStore.stringToList(config.getString("GPRealEstate.Keywords.Actions.Renting", "Rent;Renting;Rental;For Rent"));
+        dataStore.cfgSellKeywords = dataStore.stringToList(config.getString("GPRealEstate.Keywords.Actions.Selling", "Sell;Selling;For Sale"));
+        
+        dataStore.cfgReplaceRent = config.getString("GPRealEstate.Keywords.Actions.ReplaceRent", "FOR LEASE");
+        dataStore.cfgReplaceSell = config.getString("GPRealEstate.Keywords.Actions.ReplaceSell", "FOR SALE");
+        
+        dataStore.cfgIgnoreClaimSize = config.getBoolean("GPRealEstate.Rules.IgnoreSizeLimit", false);
         
         if(!reload) {
         	// Letting the console know the "Keywords"
-        	this.log.info("Signs will be using the keywords \"" + DataStore.cfgShortSignName + "\" or \"" + DataStore.cfgLongSignName + "\"");
+        	this.log.info("Signs will be using the keywords \"" + dataStore.cfgSignShort + "\" or \"" + dataStore.cfgSignLong + "\"");
         }
         
-        // Saving the confige informations down.
-        outConfig.set("GPRealEstate.Keywords.Short", DataStore.cfgShortSignName);
-        outConfig.set("GPRealEstate.Keywords.Long", DataStore.cfgLongSignName);
-        outConfig.set("GPRealEstate.Rules.IgnoreSizeLimit", DataStore.cfgIgnoreClaimSize);
+        // Saving the config informations into the file.
+        outConfig.set("GPRealEstate.Keywords.Signs.Short", dataStore.cfgSignShort);
+        outConfig.set("GPRealEstate.Keywords.Signs.Long", dataStore.cfgSignLong);
+        outConfig.set("GPRealEstate.Keywords.Actions.Renting", dataStore.listToString(dataStore.cfgRentKeywords));
+        outConfig.set("GPRealEstate.Keywords.Actions.Selling", dataStore.listToString(dataStore.cfgSellKeywords));
+        outConfig.set("GPRealEstate.Keywords.Actions.ReplaceRent", dataStore.cfgReplaceRent);
+        outConfig.set("GPRealEstate.Keywords.Actions.ReplaceSell", dataStore.cfgReplaceSell);
+        outConfig.set("GPRealEstate.Rules.IgnoreSizeLimit", dataStore.cfgIgnoreClaimSize);
         
         try {
-        	outConfig.save(DataStore.configFilePath);
+        	outConfig.save(dataStore.configFilePath);
         }
         catch(IOException exception){
-        	this.log.info("Unable to write to the configuration file at \"" + DataStore.configFilePath + "\"");
+        	this.log.info("Unable to write to the configuration file at \"" + dataStore.configFilePath + "\"");
         }
         
     }
 
-    public static void addLogEntry(String entry) {
+    public void addLogEntry(String entry) {
         try {
-            File logFile = new File(DataStore.logFilePath);
+            File logFile = new File(dataStore.logFilePath);
             
             if (!logFile.exists()) { 
             	logFile.createNewFile(); 
