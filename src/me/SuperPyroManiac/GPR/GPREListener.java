@@ -291,9 +291,9 @@ public class GPREListener implements Listener {
                 		if(claim.parent == null){
                 			
                 			// This is a normal claim.
-                			if (GPRealEstate.perms.has(player, "gprealestate.buy.claim")) {
+                			if (GPRealEstate.perms.has(player, "gprealestate.claim.buy")) {
 	                			
-                				if((claim.getArea() < gp.dataStore.getPlayerData(player.getUniqueId()).getAccruedClaimBlocks()) || player.hasPermission("gprealestate.ignore.limit")){
+                				if((claim.getArea() <= gp.dataStore.getPlayerData(player.getUniqueId()).getAccruedClaimBlocks()) || player.hasPermission("gprealestate.ignore.limit")){
                 					
                 					if(makePayment(player, sign.getLine(2), price)){
                 					
@@ -330,7 +330,7 @@ public class GPREListener implements Listener {
 		                                    return;
 		                                }
 		
-		                                gp.dataStore.saveClaim(claim);
+		                                //gp.dataStore.saveClaim(claim);
 		                                event.getClickedBlock().setType(Material.AIR);
 		                                return;
 	                                
@@ -344,7 +344,7 @@ public class GPREListener implements Listener {
                 			
                 			}
                 			else {
-                				player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "You do not have permission to buy subclaims!");
+                				player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "You do not have permission to buy claims!");
                 				return;
                 			}
                 				
