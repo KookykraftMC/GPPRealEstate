@@ -266,13 +266,40 @@ public class GPREListener implements Listener {
                     }
                 	
                 	if(event.getPlayer().isSneaking()){	// Player is sneaking, this is the info-tool
+                		
                 		String message = "";
                 		
-                		message += ChatColor.BLUE + "-----= " + ChatColor.WHITE + "[" + ChatColor.GOLD + "RealEstate Info" + ChatColor.WHITE + "]" + ChatColor.BLUE + " =-----\n";
-                		//message += ChatColor.WHITE + "This "
-                		message += ChatColor.GREEN + "Some info is supose to go here!";
+                		if(event.getPlayer().hasPermission("gprealestate.info")){
+
+	                		String claimType = claim.parent == null ? "claim" : "subclaim";
+	                		
+	                		message += ChatColor.BLUE + "-----= " + ChatColor.WHITE + "[" + ChatColor.GOLD + "RealEstate Info" + ChatColor.WHITE + "]" + ChatColor.BLUE + " =-----\n";
+	                		
+	                		if(status.equalsIgnoreCase(plugin.dataStore.cfgReplaceSell)){
+	                			message += ChatColor.AQUA + "This " + ChatColor.GREEN + claimType.toUpperCase() + ChatColor.AQUA + " is for sale, for " + ChatColor.GREEN + price + " " + GPRealEstate.econ.currencyNamePlural() + "\n";
+	                			if(claimType.equalsIgnoreCase("claim")){
+	                				message += ChatColor.AQUA + "The current owner is: " + ChatColor.GREEN + claim.getOwnerName();
+	                			}
+	                			else {
+	                				message += ChatColor.AQUA + "The main claim owner is: " + ChatColor.GREEN + claim.getOwnerName() + "\n";
+	                				message += ChatColor.LIGHT_PURPLE + "Note: " + ChatColor.AQUA + "You will only buy access to this subclaim!"; 
+	                			}
+	                		}
+	                		else if(claimType.equalsIgnoreCase("subclaim") && status.equalsIgnoreCase(plugin.dataStore.cfgReplaceRent)){
+	                			message += ChatColor.AQUA + "This " + ChatColor.GREEN + claimType.toUpperCase() + ChatColor.AQUA + " is for lease, for " + ChatColor.GREEN + price + " " + GPRealEstate.econ.currencyNamePlural() + "\n";
+	                			message += ChatColor.AQUA + "The leasing period has to be renewed every " + ChatColor.GREEN + "X days";
+	                		}
+	                		else {
+	                			message = ChatColor.RED + "Ouch! Something went wrong!";
+	                		}
+                		
+                		}
+                		else {
+                			message = ChatColor.RED + "You do not have permissions to get RealEstate info!";
+                		}
                 		
                 		event.getPlayer().sendMessage(message);
+                		
                 	}
                 	else {
                 		
