@@ -33,6 +33,7 @@ public class DataStore {
     public String cfgReplaceRent;
     public String cfgReplaceSell;
     
+    public boolean cfgEnableLeasing;
     public boolean cfgIgnoreClaimSize;
     
     public DataStore(GPRealEstate plugin){

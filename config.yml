@@ -9,5 +9,6 @@ GPRealEstate:
       ReplaceRent: 'FOR LEASE'
       ReplaceSell: 'FOR SALE'
   Rules:
+  	EnableLeasing: false;
   	IgnoreClaimLimit: false
   

@@ -1,9 +1,10 @@
 name: GPRealEstate
 main: me.SuperPyroManiac.GPR.GPRealEstate
 dev-url: http://www.spigotmc.org/resources/griefprevention-addon-realestate.1974/
-version: 1.4.5
+version: 1.5.0
 authors: [SuperPyroManiac, MrCaira]
 depend: [GriefPrevention, Vault]
+
 commands:
   gpre:
     description: Access to the GPRealEstate command.
@@ -11,44 +12,48 @@ commands:
     aliases: [realestate, gprealestate]
     permission: gprealestate.info
     permission-message: You do not have access to that command!
+
 permissions:
   gprealestate.*:
     description: Gives access to all GPRealEstate permissions.
     default: op
     children:
-      gprealestate.sell.claim: true
-      gprealestate.sell.subclaim: true
-      gprealestate.buy.claim: true
-      gprealestate.buy.subclaim: true
       gprealestate.info: true
-      gprealestate.ignoresizelimit: true
-  gprealestate.sell.*:
-    description: Gives access to sell all claim types.
+      gprealestate.claim.buy: true
+      gprealestate.claim.sell: true
+      gprealestate.subclaim.buy: true
+      gprealestate.subclaim.sell: true
+      gprealestate.ignore.limit: true
+  gprealestate.claim.*:
+    description: Gives access all claim access.
     default: op
     children:
-      gprealestate.sell.claim: true
-      gprealestate.sell.subclaim: true
-  gprealestate.buy.*:
-    description: Gives access to buy all claim types.
+      gprealestate.claim.buy: true
+      gprealestate.claim.sell: true
+  gprealestate.subclaim.*:
+    description: Gives access all claim access.
     default: op
     children:
-      gprealestate.sell.claim: true
-      gprealestate.sell.subclaim: true
-  gprealestate.sell.claim:
-    description: Allows player to sell claims.
+      gprealestate.subclaim.buy: true
+      gprealestate.subclaim.sell: true
+  gprealestate.info:
+    description: Allows player to get claim info.
     default: true
-  gprealestate.sell.subclaim:
-    description: Allows player to sell subclaims.
-    default: true
-  gprealestate.buy.claim:
+  gprealestate.claim.buy:
     description: Allows player to buy claims.
     default: true
-  gprealestate.buy.subclaim:
+  gprealestate.claim.sell:
+    description: Allows player to sell claims.
+    default: true
+  gprealestate.subclaim.buy:
     description: Allows player to buy subclaims.
     default: true
+  gprealestate.subclaim.sell:
+    description: Allows player to sell subclaims.
+    default: true
+  gprealestate.ignore.limit:
+    description: Allows player to buy claims thats bigger than the players available claim size.
+    default: false
   gprealestate.admin:
     description: Allows the player to see information about the plugin
-    default: false
-  gprealestate.ignoresizelimit:
-    description: Allows player to buy claims thats bigger than the players available claim size.
     default: false

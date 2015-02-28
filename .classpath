@@ -2,8 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="lib" path="C:/Users/Randell/Dock/MineCraft Server/PLUGIN DEPENDANCIES/GriefPrevention.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Randell/Dock/MineCraft Server/PLUGIN DEPENDANCIES/Vault.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Randell/Dock/MineCraft Server/PLUGIN DEPENDANCIES/bukkit.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Mikkel/Documents/Bukkit Libraries/craftbukkit-1.8-R0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Mikkel/Documents/Bukkit Libraries/Vault.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Mikkel/Documents/Bukkit Libraries/GriefPrevention.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

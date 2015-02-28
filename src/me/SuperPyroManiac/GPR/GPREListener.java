@@ -36,12 +36,39 @@ public class GPREListener implements Listener {
         PluginManager pm = this.plugin.getServer().getPluginManager();
         pm.registerEvents(this, this.plugin);
     }
+    
+    private boolean makePayment(Player sender, String reciever, Double price){
+    	if (!GPRealEstate.econ.has(sender.getName(), price.doubleValue())) {
+    		sender.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "You do not have enough money!");
+            return false;
+        }
+
+        EconomyResponse ecoresp = GPRealEstate.econ.withdrawPlayer(sender.getName(), price.doubleValue());
+
+        if (!ecoresp.transactionSuccess()) {
+        	sender.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "Could not withdraw the money!");
+            return false;
+        }
+
+        if (!reciever.equalsIgnoreCase("server")) {
+
+            ecoresp = GPRealEstate.econ.depositPlayer(reciever, price.doubleValue());
+
+            if (!ecoresp.transactionSuccess()) {
+            	sender.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "Could not transfer money, refunding Player!");
+                GPRealEstate.econ.depositPlayer(sender.getName(), price.doubleValue());
+                return false;
+            }
+
+        }
+        
+        return true;
+    }
 
     @EventHandler 	// Player creates a sign
     public void onSignChange(SignChangeEvent event){
     	
         // When a sign is being created..
-    	
     	if((event.getLine(0).equalsIgnoreCase(plugin.dataStore.cfgSignShort)) || (event.getLine(0).equalsIgnoreCase(plugin.dataStore.cfgSignLong))){
     		
     		Player player = event.getPlayer();									// The Player
@@ -81,7 +108,7 @@ public class GPREListener implements Listener {
                 
                 if(player.getName().equalsIgnoreCase(claim.getOwnerName())){
                     
-                	if (!GPRealEstate.perms.has(player, "gprealestate.sell.claim")) {
+                	if (!GPRealEstate.perms.has(player, "gprealestate.claim.sell")) {
                     	// The player does NOT have the correct permissions to sell claims
                     	player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "You do not have permission to sell claims!");
                         event.setCancelled(true);
@@ -127,7 +154,7 @@ public class GPREListener implements Listener {
             else if ((player.getName().equalsIgnoreCase(claim.parent.getOwnerName())) || (claim.managers.equals(player.getName()))) {
             	// This is a "subclaim"
             	
-            	if (GPRealEstate.perms.has(player, "gprealestate.sell.subclaim")) {
+            	if (GPRealEstate.perms.has(player, "gprealestate.subclaim.sell")) {
             		
             		String period = event.getLine(2);
             		
@@ -154,29 +181,44 @@ public class GPREListener implements Listener {
                 	else {
                 		
                 		// Leasing with due time, player pays once every "X" for a subclaim.
+                		if(plugin.dataStore.cfgEnableLeasing){
+                			
+                			if(2 > 10){
+                				if(!period.matches("^([0-9]{1,3})(w|d|h){1}$")){
+    	                			player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "The leasing period you wrote is not correct.");
+    	                			event.getBlock().breakNaturally();
+    	                            event.setCancelled(true);
+    	                            return;
+    	                		}
+    	                		
+    	                		event.setLine(0, plugin.dataStore.cfgSignLong);
+    	                        event.setLine(1, ChatColor.DARK_GREEN + plugin.dataStore.cfgReplaceRent);
+    	                        event.setLine(2, player.getName());
+    	                        event.setLine(3, price + " " + GPRealEstate.econ.currencyNamePlural());
+    	                		
+    	                        player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.AQUA + "You are now leasing this subclaim for " + ChatColor.GREEN + price + " " + GPRealEstate.econ.currencyNamePlural());
+    	
+    	                        plugin.addLogEntry(
+    	                    		"[" + this.dateFormat.format(this.date) + "] " + player.getName() + " has made a subclaim for lease at "
+    	                    		+ "[" + player.getLocation().getWorld() + ", "
+    	                    		+ "X: " + player.getLocation().getBlockX() + ", "
+    	                    		+ "Y: " + player.getLocation().getBlockY() + ", "
+    	                    		+ "Z: " + player.getLocation().getBlockZ() + "] "
+    	                    		+ "Price: " + price + " " + GPRealEstate.econ.currencyNamePlural()
+    	                        );
+                			}
+                			else {
+                				player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.DARK_PURPLE + "This feature is not yet fully implemented!");
+                    			event.getBlock().breakNaturally();
+                    			return;
+                			}
                 		
-                		if(!period.matches("^([0-9]{1,3})(w|d|h){1}$")){
-                			player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "The leasing period you wrote is not correct.");
-                			event.getBlock().breakNaturally();
-                            event.setCancelled(true);
-                            return;
                 		}
-                		
-                		event.setLine(0, plugin.dataStore.cfgSignLong);
-                        event.setLine(1, ChatColor.DARK_GREEN + plugin.dataStore.cfgReplaceRent);
-                        event.setLine(2, player.getName());
-                        event.setLine(3, price + " " + GPRealEstate.econ.currencyNamePlural());
-                		
-                        player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.AQUA + "You are now leasing this subclaim for " + ChatColor.GREEN + price + " " + GPRealEstate.econ.currencyNamePlural());
-
-                        plugin.addLogEntry(
-                    		"[" + this.dateFormat.format(this.date) + "] " + player.getName() + " has made a subclaim for lease at "
-                    		+ "[" + player.getLocation().getWorld() + ", "
-                    		+ "X: " + player.getLocation().getBlockX() + ", "
-                    		+ "Y: " + player.getLocation().getBlockY() + ", "
-                    		+ "Z: " + player.getLocation().getBlockZ() + "] "
-                    		+ "Price: " + price + " " + GPRealEstate.econ.currencyNamePlural()
-                        );
+                		else {
+                			player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.DARK_PURPLE + "Leasing has been disabled!");
+                			event.getBlock().breakNaturally();
+                			return;
+                		}
                         
                 	}
                 	
@@ -216,9 +258,14 @@ public class GPREListener implements Listener {
                     Double price = Double.valueOf(Double.valueOf(delimit[0].trim()).doubleValue());
                     
                     String status = ChatColor.stripColor(sign.getLine(1));
+                    
+                    if (claim == null){	// Sign is NOT inside a claim, breaks the sign.
+                        player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "This sign is no longer within a claim!");
+                        event.getClickedBlock().setType(Material.AIR);
+                        return;
+                    }
                 	
-                	if(event.getPlayer().isSneaking()){
-                		// Player is sneaking, this is the info-tool
+                	if(event.getPlayer().isSneaking()){	// Player is sneaking, this is the info-tool
                 		String message = "";
                 		
                 		message += ChatColor.BLUE + "-----= " + ChatColor.WHITE + "[" + ChatColor.GOLD + "RealEstate Info" + ChatColor.WHITE + "]" + ChatColor.BLUE + " =-----\n";
@@ -228,58 +275,129 @@ public class GPREListener implements Listener {
                 		event.getPlayer().sendMessage(message);
                 	}
                 	else {
-                		// Player is not sneaking, and should wants to buy the claim
                 		
-                		if (claim == null) {
-                			// Sign is NOT inside a claim, breaks the sign.
-                            player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "This sign is no longer within a claim!");
-                            event.getClickedBlock().setType(Material.AIR);
-                            return;
-                        }
-                		
+                		// Player is not sneaking, and wants to buy/lease the claim
                 		if(claim.getOwnerName().equalsIgnoreCase(player.getName())) {
                         	player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "You already own this claim!");
                             return;
                         }
                 		
+                		if((!sign.getLine(2).equalsIgnoreCase(claim.getOwnerName())) && (!claim.isAdminClaim())) {
+                            player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "The listed player does not have the rights to sell/lease this claim!");
+                            event.getClickedBlock().setType(Material.AIR);
+                            return;
+                        }
+                		
                 		if(claim.parent == null){
+                			
                 			// This is a normal claim.
+                			if (GPRealEstate.perms.has(player, "gprealestate.buy.claim")) {
+	                			
+                				if((claim.getArea() < gp.dataStore.getPlayerData(player.getUniqueId()).getAccruedClaimBlocks()) || player.hasPermission("gprealestate.ignore.limit")){
+                					
+                					if(makePayment(player, sign.getLine(2), price)){
+                					
+		                                try {
+		
+		                                    for (Claim child : claim.children) {
+		                                        child.clearPermissions();
+		                                        child.managers.remove(child.getOwnerName());
+		                                    }
+		
+		                                    claim.clearPermissions();
+		                                    gp.dataStore.changeClaimOwner(claim, player.getUniqueId());
+		
+		                                }
+		                                catch (Exception e) {
+		                                    e.printStackTrace();
+		                                    return;
+		                                }
+		
+		                                if (claim.getOwnerName().equalsIgnoreCase(player.getName())) {
+		                                	
+		                                    player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.AQUA + "You have successfully purchased this claim for " + ChatColor.GREEN + price + GPRealEstate.econ.currencyNamePlural());
+		                                    plugin.addLogEntry(
+		                                    	"[" + this.dateFormat.format(this.date) + "] " + player.getName() + " Has purchased a claim at "
+		                                    	+ "[" + player.getLocation().getWorld() + ", "
+		                                    	+ "X: " + player.getLocation().getBlockX() + ", "
+		                                    	+ "Y: " + player.getLocation().getBlockY() +", "
+		                                    	+ "Z: " + player.getLocation().getBlockZ() + "] "
+		                                    	+ "Price: " + price + " " + GPRealEstate.econ.currencyNamePlural()
+		                                    );
+		                                    
+		                                } else {
+		                                    player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "Cannot purchase claim!");
+		                                    return;
+		                                }
+		
+		                                gp.dataStore.saveClaim(claim);
+		                                event.getClickedBlock().setType(Material.AIR);
+		                                return;
+	                                
+                					}
+	
+	                            }
+	                            else {
+	                                player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "You do not have enough claim blocks available.");
+	                                return;
+	                            }
                 			
-                			if((!sign.getLine(2).equalsIgnoreCase(claim.getOwnerName())) && (!claim.isAdminClaim())) {
-                                player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "The listed player does no longer have the rights to sell this claim!");
-                                event.getClickedBlock().setType(Material.AIR);
-                                return;
-                            }
-                			
-                			if(status.equalsIgnoreCase(plugin.dataStore.cfgReplaceSell)){
-                				// The player will be BUYING the selected claim.
-                				event.getPlayer().sendMessage(plugin.dataStore.chatPrefix + ChatColor.GREEN + "You want to buy this claim!");
                 			}
-                			
+                			else {
+                				player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "You do not have permission to buy subclaims!");
+                				return;
+                			}
+                				
                 		}
                 		else {
-                			// This is a subclaim.
                 			
+                			// This is a subclaim.
                 			if(status.equalsIgnoreCase(plugin.dataStore.cfgReplaceSell)){
                 				
-                				// The player will be BUYING ACCESS to the subclaim.
-                				
-                				if ((!sign.getLine(2).equalsIgnoreCase(claim.parent.getOwnerName())) && (!claim.managers.equals(sign.getLine(2))) && (!claim.parent.isAdminClaim())) {
-                                    player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "The listed player does no longer have the rights to sell access to this claim!");
-                                    event.getClickedBlock().setType(Material.AIR);
+                				if (GPRealEstate.perms.has(player, "gprealestate.subclaim.buy")) {
+                					
+                					if(makePayment(player, sign.getLine(2), price)){
+
+	                                    claim.clearPermissions();
+	
+	                                    if (!sign.getLine(2).equalsIgnoreCase("server")) {
+	                                        claim.managers.remove(sign.getLine(2));
+	                                    }
+	
+	                                    claim.managers.add(player.getUniqueId().toString());							// Allowing the player to manage permissions.
+	                                    claim.setPermission(player.getUniqueId().toString(), ClaimPermission.Build);	// Allowing the player to build in the subclaim!
+	                                    gp.dataStore.saveClaim(claim);
+	                                    event.getClickedBlock().breakNaturally();
+	
+	                                    player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.AQUA + "You have successfully purchased this subclaim for " + ChatColor.GREEN + price + GPRealEstate.econ.currencyNamePlural());
+	
+	                                    plugin.addLogEntry(
+	                                    	"[" + this.dateFormat.format(this.date) + "] " + player.getName() + " Has purchased a subclaim at "
+	                                    	+ "[" + player.getLocation().getWorld() + ", "
+	                                    	+ "X: " + player.getLocation().getBlockX() + ", "
+	                                    	+ "Y: " + player.getLocation().getBlockY() + ", "
+	                                    	+ "Z: " + player.getLocation().getBlockZ() + "] "
+	                                    	+ "Price: " + price + " " + GPRealEstate.econ.currencyNamePlural()
+	                                    );
+	                                    return;
+                                    
+                					}
+
+                                } else {
+                                    player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "You do not have permission to buy subclaims!");
                                     return;
                                 }
                 				
-                				event.getPlayer().sendMessage(plugin.dataStore.chatPrefix + ChatColor.GREEN + "You want to buy access to this sub claim!");
-                				
                 			}
-                			else if(status.equalsIgnoreCase(plugin.dataStore.cfgReplaceSell)){
+                			else if(status.equalsIgnoreCase(plugin.dataStore.cfgReplaceSell) && plugin.dataStore.cfgEnableLeasing){
                 				
-                				// The player will be RENTING the subclaim.
+                				// Leasing subclaims
                 				
-                				if ((!sign.getLine(2).equalsIgnoreCase(claim.parent.getOwnerName())) && (!claim.managers.equals(sign.getLine(2))) && (!claim.parent.isAdminClaim())) {
-                                    player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "The listed player does no longer have the rights to sell access to this claim!");
-                                    event.getClickedBlock().setType(Material.AIR);
+                				if (GPRealEstate.perms.has(player, "gprealestate.subclaim.buy")) {
+                					player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.DARK_PURPLE + "The leasing function is currently being worked on!");
+                				}
+                				else {
+                                    player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "You do not have permission to lease subclaims!");
                                     return;
                                 }
                 				
@@ -293,8 +411,6 @@ public class GPREListener implements Listener {
                 				//	lengthInSeconds = ((60*60)*length); 		// The time has been set using hours.
                 				//}
                 				
-                				event.getPlayer().sendMessage(plugin.dataStore.chatPrefix + ChatColor.GREEN + "You want to lease this claim!");
-                				
                 			}
                 			else {
                 				player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "This sign was misplaced!");
@@ -302,7 +418,9 @@ public class GPREListener implements Listener {
                                 return;
                 			}
                             
-                		}
+                		} // END IF CHECK CLAIM TYPE
+                        
+                        //if(claim.get)
                 		
                 	}
                 	
