@@ -1,7 +1,6 @@
-package me.SuperPyroManiac.GPR;
+package net.kaikk.mc.gpprealestate;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -10,7 +9,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 
 public class DataStore {
 	
-	GPRealEstate plugin;
+	GPPRealEstate plugin;
 	
 	// Plugin Description File (plugin.yml) access.
     public PluginDescriptionFile pdf;
@@ -36,7 +35,7 @@ public class DataStore {
     public boolean cfgEnableLeasing;
     public boolean cfgIgnoreClaimSize;
     
-    public DataStore(GPRealEstate plugin){
+    public DataStore(GPPRealEstate plugin){
     	this.plugin = plugin;
     	this.pdf = this.plugin.getDescription();
     }

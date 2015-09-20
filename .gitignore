@@ -1,4 +1,9 @@
-.project
+*.class
+lib/
+src/test/
+.settings/
+target/
+.idea/
+*.iml
 .classpath
-.settings
-/bin
+.project

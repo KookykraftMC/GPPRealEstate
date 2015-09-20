@@ -1,4 +1,4 @@
-package me.SuperPyroManiac.GPR;
+package net.kaikk.mc.gpprealestate;
 
 import java.sql.Timestamp;
 import java.util.Date;
