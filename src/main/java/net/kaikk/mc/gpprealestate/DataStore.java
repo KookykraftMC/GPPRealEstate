@@ -20,7 +20,7 @@ public class DataStore {
     public final String logFilePath = pluginDirPath + "GPRealEstate.log";
     
     // Plugin Log/Chat Prefix
-    public final String chatPrefix = "[" + ChatColor.GOLD + "GPRealEstate" + ChatColor.WHITE + "] ";
+    public final String chatPrefix = "[" + ChatColor.GOLD + "GPPRealEstate" + ChatColor.WHITE + "] ";
     
     // Config Variables
     public String cfgSignShort;
