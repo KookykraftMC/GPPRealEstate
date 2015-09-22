@@ -3,6 +3,7 @@ package net.kaikk.mc.gpprealestate;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -34,6 +35,8 @@ public class DataStore {
     
     public boolean cfgEnableLeasing;
     public boolean cfgIgnoreClaimSize;
+    
+    Map<String, String> messages;
     
     public DataStore(GPPRealEstate plugin){
     	this.plugin = plugin;

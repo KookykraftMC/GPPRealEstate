@@ -11,4 +11,44 @@ GPRealEstate:
   Rules:
   	EnableLeasing: false;
   	IgnoreClaimLimit: false
-  
+  Messages:
+    DateFormat: 'yyyy/MM/dd HH:mm:ss'
+    NotEnoughMoney: 'You do not have enough money!'
+    CouldntWithdrawMoney: 'Could not withdraw the money!'
+    CoudlntTransferMoney: 'Could not transfer money, refunding Player!'
+    SignNotInsideAClaim: 'The sign you placed is not inside a claim!'
+    EnterPriceOnSecondLine: 'You need to enter the price on the second line!'
+    NotANumber: 'The price you entered is not a valid number!'
+    NoPermissionToSellClaims: 'You do not have permission to sell claims!'
+    NowSellingClaim: 'You are now selling this claim for [price]'
+    CanOnlyLeaseAdminClaims: 'You cannot sell admin claims, they can only be leased!'
+    SellYourClaimsOnly: 'You can only sell claims you own!'
+    NowSellingSubclaim: 'You are now selling access to this subclaim for [price]'
+    LeasingDisabled: 'Leasing has been disabled!'
+    NoPermissionToSellSubClaims: 'You do not have permission to sell subclaims!'
+    SignNoLongerInClaim: 'This sign is no longer within a claim!'
+    InfoSellL1: 'This [type] is for sale, for [price]'
+    InfoSellL2Claim: 'The current owner is: '
+    InfoSellL2SubClaim1: 'The main claim owner is: '
+    InfoSellL2SubClaim2: 'Note: You will only buy access to this subclaim!'
+    InfoLeaseL1SubClaim1: 'This [type] is for lease, for [price]'
+    InfoLeaseL1SubClaim2: 'The leasing period has to be renewed every X days'
+    InfoError: 'Ouch! Something went wrong!'
+    NoPermissionToGetInfo: 'You do not have permissions to get RealEstate info!'
+    YouAlreadyOwnClaim: 'You already own this claim!'
+    ListedPlayerHasNoRights: 'The listed player does not have the rights to sell/lease this claim!'
+    SuccessfullyPurchasedClaim: 'You have successfully purchased this claim for '
+    CannotPurchaseClaim: 'Cannot purchase claim!'
+    NotEnoughBlocksAvailable: 'You do not have enough claim blocks available.'
+    NoPermissionToBuyClaims: 'You do not have permission to buy claims!'
+    SuccessfullyPurchasedSubClaim: 'You have successfully purchased this subclaim for '
+    NoPermissionToBuySubClaims: 'You do not have permission to buy subclaims!'
+    NoPermissionToLeaseSubClaims: 'You do not have permission to lease subclaims!'
+    SignMisplaced: 'This sign was misplaced!'
+    
+    
+    
+    
+    
+    
+    

@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import net.milkbowl.vault.economy.Economy;
@@ -12,6 +14,7 @@ import net.milkbowl.vault.permission.Permission;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -57,7 +60,7 @@ public class GPPRealEstate extends JavaPlugin {
             }
             
         }
-
+        
         loadConfig(false);
         
     }
@@ -99,7 +102,7 @@ public class GPPRealEstate extends JavaPlugin {
     }
     
     private void loadConfig(boolean reload){
-    	
+    	dataStore.messages=new HashMap<String,String>();
     	FileConfiguration config = YamlConfiguration.loadConfiguration(new File(dataStore.configFilePath));
         FileConfiguration outConfig = new YamlConfiguration();
         
@@ -119,6 +122,10 @@ public class GPPRealEstate extends JavaPlugin {
         if(!reload) {
         	// Letting the console know the "Keywords"
         	this.log.info("Signs will be using the keywords \"" + dataStore.cfgSignShort + "\" or \"" + dataStore.cfgSignLong + "\"");
+        }
+        ConfigurationSection messagesSection = config.getConfigurationSection("GPRealEstate.Messages");
+        for (String key : messagesSection.getKeys(false)) {
+        	dataStore.messages.put(key, messagesSection.getString(key));
         }
         
         // Saving the config informations into the file.
