@@ -311,8 +311,13 @@ public class EventListener implements Listener {
                 		@SuppressWarnings("deprecation")
 						OfflinePlayer owner = Bukkit.getOfflinePlayer(sign.getLine(2));
                 		
-                		if(owner == null || !owner.getUniqueId().equals(claim.getOwnerID()) || claim.isAdminClaim()) {
+                		if(owner == null || !owner.getUniqueId().equals(claim.getParent()==null ? claim.getOwnerID() : claim.getParent().getOwnerID())) {
                             player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "The listed player does not have the rights to sell/lease this claim!");
+                            event.getClickedBlock().setType(Material.AIR);
+                            return;
+                        }
+                		if(claim.isAdminClaim()) {
+                            player.sendMessage(plugin.dataStore.chatPrefix + ChatColor.RED + "Admin claims can't be !");
                             event.getClickedBlock().setType(Material.AIR);
                             return;
                         }
