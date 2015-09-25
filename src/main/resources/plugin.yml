@@ -57,3 +57,6 @@ permissions:
   gprealestate.admin:
     description: Allows the player to see information about the plugin
     default: false
+  gprealestate.adminclaim:
+    description: Allows the player to sell admin claims
+    default: false
