@@ -11,8 +11,8 @@ GPRealEstate:
   Rules:
   	EnableLeasing: false;
   	IgnoreClaimLimit: false
+  DateFormat: 'yyyy/MM/dd HH:mm:ss'
   Messages:
-    DateFormat: 'yyyy/MM/dd HH:mm:ss'
     NotEnoughMoney: 'You do not have enough money!'
     CouldntWithdrawMoney: 'Could not withdraw the money!'
     CoudlntTransferMoney: 'Could not transfer money, refunding Player!'

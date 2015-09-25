@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 public class Contract {
-	
 	public String Owner;				// The owner's UUID (The person leasing the claim)
 	public String Landlord;				// The landlord's UUID (The actual Owner)
 	public Double Price;				// The price of the lease, and the payment for each renewal.
@@ -20,7 +19,4 @@ public class Contract {
 		this.LastRenewal = new Timestamp(date.getTime());
 		this.NextRenewal = new Timestamp(renewal.getTime());
 	}
-	
-	
-	
 }

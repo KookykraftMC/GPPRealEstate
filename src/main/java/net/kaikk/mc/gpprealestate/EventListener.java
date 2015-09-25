@@ -26,7 +26,7 @@ import org.bukkit.plugin.PluginManager;
 public class EventListener implements Listener {
     private GPPRealEstate plugin;
     
-    DateFormat dateFormat = new SimpleDateFormat(plugin.dataStore.messages.get("DateFormat"));
+    DateFormat dateFormat = new SimpleDateFormat(plugin.dataStore.dateFormat);
     Date date = new Date();
 
     public EventListener(GPPRealEstate plugin){

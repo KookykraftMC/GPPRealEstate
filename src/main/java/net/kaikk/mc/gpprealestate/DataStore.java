@@ -9,7 +9,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginDescriptionFile;
 
 public class DataStore {
-	
 	GPPRealEstate plugin;
 	
 	// Plugin Description File (plugin.yml) access.
@@ -35,6 +34,8 @@ public class DataStore {
     
     public boolean cfgEnableLeasing;
     public boolean cfgIgnoreClaimSize;
+    
+    public String dateFormat; 
     
     Map<String, String> messages;
     

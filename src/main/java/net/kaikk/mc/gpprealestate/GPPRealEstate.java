@@ -121,6 +121,8 @@ public class GPPRealEstate extends JavaPlugin {
         dataStore.cfgEnableLeasing = config.getBoolean("GPRealEstate.Rules.EnableLeasing", false);
         dataStore.cfgIgnoreClaimSize = config.getBoolean("GPRealEstate.Rules.IgnoreSizeLimit", false);
         
+        dataStore.dateFormat = config.getString("GPRealEstate.DateFormat", "yyyy/MM/dd HH:mm:ss");
+        
         if(!reload) {
         	// Letting the console know the "Keywords"
         	this.log.info("Signs will be using the keywords \"" + dataStore.cfgSignShort + "\" or \"" + dataStore.cfgSignLong + "\"");
