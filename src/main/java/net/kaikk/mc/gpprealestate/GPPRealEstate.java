@@ -33,7 +33,9 @@ public class GPPRealEstate extends JavaPlugin {
     public void onEnable(){
         
         this.log = getLogger();
+        
         this.dataStore = new DataStore(this);
+        loadConfig(false);
         
         new EventListener(this).registerEvents();
 
@@ -61,7 +63,7 @@ public class GPPRealEstate extends JavaPlugin {
             
         }
         
-        loadConfig(false);
+        
         
     }
     
