@@ -41,7 +41,7 @@
        </dependency>
    </dependencies>
    <properties>
-   	<version>0.9.4</version>
+   	<version>0.9.5</version>
    	<package>net.kaikk.mc.gpprealestate</package>
    	<name>GPPRealEstate</name>
    </properties>
