@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import net.milkbowl.vault.economy.Economy;
@@ -15,8 +14,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -105,47 +102,46 @@ public class GPPRealEstate extends JavaPlugin {
     
     private void loadConfig(boolean reload){
     	dataStore.messages=new HashMap<String,String>();
-    	FileConfiguration config = YamlConfiguration.loadConfiguration(new File(dataStore.configFilePath));
-        FileConfiguration outConfig = new YamlConfiguration();
+		this.saveDefaultConfig();
+		this.getConfig().options().copyDefaults(true);
         
     	// Loading the config file items that exsists or setting the default values.
-        dataStore.cfgSignShort = config.getString("GPRealEstate.Keywords.Signs.Short", "[RE]");
-        dataStore.cfgSignLong = config.getString("GPRealEstate.Keywords.Signs.Long", "[RealEstate]");
+        dataStore.cfgSignShort = this.getConfig().getString("GPRealEstate.Keywords.Signs.Short", "[RE]");
+        dataStore.cfgSignLong = this.getConfig().getString("GPRealEstate.Keywords.Signs.Long", "[RealEstate]");
         
-        dataStore.cfgRentKeywords = dataStore.stringToList(config.getString("GPRealEstate.Keywords.Actions.Renting", "Rent;Renting;Rental;For Rent"));
-        dataStore.cfgSellKeywords = dataStore.stringToList(config.getString("GPRealEstate.Keywords.Actions.Selling", "Sell;Selling;For Sale"));
+        dataStore.cfgRentKeywords = dataStore.stringToList(this.getConfig().getString("GPRealEstate.Keywords.Actions.Renting", "Rent;Renting;Rental;For Rent"));
+        dataStore.cfgSellKeywords = dataStore.stringToList(this.getConfig().getString("GPRealEstate.Keywords.Actions.Selling", "Sell;Selling;For Sale"));
         
-        dataStore.cfgReplaceRent = config.getString("GPRealEstate.Keywords.Actions.ReplaceRent", "FOR LEASE");
-        dataStore.cfgReplaceSell = config.getString("GPRealEstate.Keywords.Actions.ReplaceSell", "FOR SALE");
+        dataStore.cfgReplaceRent = this.getConfig().getString("GPRealEstate.Keywords.Actions.ReplaceRent", "FOR LEASE");
+        dataStore.cfgReplaceSell = this.getConfig().getString("GPRealEstate.Keywords.Actions.ReplaceSell", "FOR SALE");
         
-        dataStore.cfgEnableLeasing = config.getBoolean("GPRealEstate.Rules.EnableLeasing", false);
-        dataStore.cfgIgnoreClaimSize = config.getBoolean("GPRealEstate.Rules.IgnoreSizeLimit", false);
+        dataStore.cfgEnableLeasing = this.getConfig().getBoolean("GPRealEstate.Rules.EnableLeasing", false);
+        dataStore.cfgIgnoreClaimSize = this.getConfig().getBoolean("GPRealEstate.Rules.IgnoreSizeLimit", false);
         
-        dataStore.dateFormat = config.getString("GPRealEstate.DateFormat", "yyyy/MM/dd HH:mm:ss");
+        dataStore.dateFormat = this.getConfig().getString("GPRealEstate.DateFormat", "yyyy/MM/dd HH:mm:ss");
         
         if(!reload) {
         	// Letting the console know the "Keywords"
         	this.log.info("Signs will be using the keywords \"" + dataStore.cfgSignShort + "\" or \"" + dataStore.cfgSignLong + "\"");
         }
-        ConfigurationSection messagesSection = config.getConfigurationSection("GPRealEstate.Messages");
+        ConfigurationSection messagesSection = this.getConfig().getConfigurationSection("GPRealEstate.Messages");
         for (String key : messagesSection.getKeys(false)) {
         	dataStore.messages.put(key, messagesSection.getString(key));
         }
         
         // Saving the config informations into the file.
-        outConfig.set("GPRealEstate.Keywords.Signs.Short", dataStore.cfgSignShort);
-        outConfig.set("GPRealEstate.Keywords.Signs.Long", dataStore.cfgSignLong);
-        outConfig.set("GPRealEstate.Keywords.Actions.Renting", dataStore.listToString(dataStore.cfgRentKeywords));
-        outConfig.set("GPRealEstate.Keywords.Actions.Selling", dataStore.listToString(dataStore.cfgSellKeywords));
-        outConfig.set("GPRealEstate.Keywords.Actions.ReplaceRent", dataStore.cfgReplaceRent);
-        outConfig.set("GPRealEstate.Keywords.Actions.ReplaceSell", dataStore.cfgReplaceSell);
-        outConfig.set("GPRealEstate.Rules.EnableLeasing", dataStore.cfgEnableLeasing);
-        outConfig.set("GPRealEstate.Rules.IgnoreSizeLimit", dataStore.cfgIgnoreClaimSize);
+        this.getConfig().set("GPRealEstate.Keywords.Signs.Short", dataStore.cfgSignShort);
+        this.getConfig().set("GPRealEstate.Keywords.Signs.Long", dataStore.cfgSignLong);
+        this.getConfig().set("GPRealEstate.Keywords.Actions.Renting", dataStore.listToString(dataStore.cfgRentKeywords));
+        this.getConfig().set("GPRealEstate.Keywords.Actions.Selling", dataStore.listToString(dataStore.cfgSellKeywords));
+        this.getConfig().set("GPRealEstate.Keywords.Actions.ReplaceRent", dataStore.cfgReplaceRent);
+        this.getConfig().set("GPRealEstate.Keywords.Actions.ReplaceSell", dataStore.cfgReplaceSell);
+        this.getConfig().set("GPRealEstate.Rules.EnableLeasing", dataStore.cfgEnableLeasing);
+        this.getConfig().set("GPRealEstate.Rules.IgnoreSizeLimit", dataStore.cfgIgnoreClaimSize);
         
         try {
-        	outConfig.save(dataStore.configFilePath);
-        }
-        catch(IOException exception){
+        	this.getConfig().save(dataStore.configFilePath);
+        } catch(IOException exception){
         	this.log.info("Unable to write to the configuration file at \"" + dataStore.configFilePath + "\"");
         }
         
