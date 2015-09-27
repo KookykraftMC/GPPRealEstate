@@ -26,11 +26,12 @@ import org.bukkit.plugin.PluginManager;
 public class EventListener implements Listener {
     private GPPRealEstate plugin;
     
-    DateFormat dateFormat = new SimpleDateFormat(plugin.dataStore.dateFormat);
+    DateFormat dateFormat;
     Date date = new Date();
 
     public EventListener(GPPRealEstate plugin){
         this.plugin = plugin;
+        this.dateFormat=new SimpleDateFormat(plugin.dataStore.dateFormat);
     }
 
     public void registerEvents(){
@@ -234,7 +235,8 @@ public class EventListener implements Listener {
     	
     }
 
-    @EventHandler 	// Player interacts with a block.
+    @SuppressWarnings("deprecation")
+	@EventHandler 	// Player interacts with a block.
     public void onSignInteract(PlayerInteractEvent event) {
     	
     	if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){

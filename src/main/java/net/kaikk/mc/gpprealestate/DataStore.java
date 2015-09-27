@@ -6,18 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
-import org.bukkit.plugin.PluginDescriptionFile;
 
 public class DataStore {
 	GPPRealEstate plugin;
-	
-	// Plugin Description File (plugin.yml) access.
-    public PluginDescriptionFile pdf;
 
-	// Plugin File Paths
-	public final String pluginDirPath = "plugins" + File.separator + "GPRealEstate" + File.separator;
-	public final String configFilePath = pluginDirPath + "config.yml";
-    public final String logFilePath = pluginDirPath + "GPRealEstate.log";
     
     // Plugin Log/Chat Prefix
     public final String chatPrefix = "[" + ChatColor.GOLD + "GPPRealEstate" + ChatColor.WHITE + "] ";
@@ -41,7 +33,6 @@ public class DataStore {
     
     public DataStore(GPPRealEstate plugin){
     	this.plugin = plugin;
-    	this.pdf = this.plugin.getDescription();
     }
     
     public List<String> stringToList(String input){

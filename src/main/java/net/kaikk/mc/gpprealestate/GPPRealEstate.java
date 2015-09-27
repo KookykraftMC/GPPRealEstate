@@ -75,7 +75,7 @@ public class GPPRealEstate extends JavaPlugin {
     		else if(args.length == 1){
     			
     			if(args[0].equalsIgnoreCase("version")){
-    				sender.sendMessage(dataStore.chatPrefix + ChatColor.GREEN + "You are running " + ChatColor.RED + dataStore.pdf.getName() + ChatColor.GREEN + " version " + ChatColor.RED + dataStore.pdf.getVersion());
+    				sender.sendMessage(dataStore.chatPrefix + ChatColor.GREEN + "You are running " + ChatColor.RED + this.getDescription().getName() + ChatColor.GREEN + " version " + ChatColor.RED + this.getDescription().getVersion());
     				return true;
     			}
     			else if(args[0].equalsIgnoreCase("reload")){
@@ -138,18 +138,13 @@ public class GPPRealEstate extends JavaPlugin {
         this.getConfig().set("GPRealEstate.Keywords.Actions.ReplaceSell", dataStore.cfgReplaceSell);
         this.getConfig().set("GPRealEstate.Rules.EnableLeasing", dataStore.cfgEnableLeasing);
         this.getConfig().set("GPRealEstate.Rules.IgnoreSizeLimit", dataStore.cfgIgnoreClaimSize);
-        
-        try {
-        	this.getConfig().save(dataStore.configFilePath);
-        } catch(IOException exception){
-        	this.log.info("Unable to write to the configuration file at \"" + dataStore.configFilePath + "\"");
-        }
-        
+
+        this.saveConfig();
     }
 
     public void addLogEntry(String entry) {
         try {
-            File logFile = new File(dataStore.logFilePath);
+            File logFile = new File(this.getDataFolder(), "log.log");
             
             if (!logFile.exists()) { 
             	logFile.createNewFile(); 
